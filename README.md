@@ -4,6 +4,8 @@ LoveBoot is an automatic [LoveBeat](http://store.steampowered.com/app/354290/) p
 
 Uses Emgu/OpenCV image recognition to recognize the gamestate (keys), and when to fulfill the gamestate (bars).
 
+If you have issues running after compiling, see [this link](http://stackoverflow.com/questions/503427/the-type-initializer-for-emgu-cv-cvinvoke-threw-an-exception) (copy emgu dlls to folder)
+
 ### Videos
 
   - [Normal 4-key](https://www.youtube.com/watch?v=BzrZuJprFVY)
