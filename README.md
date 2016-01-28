@@ -6,6 +6,13 @@ Uses Emgu/OpenCV image recognition to recognize the gamestate (keys), and when t
 
 If you have issues running after compiling, see [this link](http://stackoverflow.com/questions/503427/the-type-initializer-for-emgu-cv-cvinvoke-threw-an-exception) (copy emgu dlls to folder)
 
+### Usage
+
+  - [F7] Toggle overlay
+  - [F8] Toggle auto-ready (Presses F5 to ready after ~40s of no keys being detected)
+  - [F9] Toggle 8-key or 4-key mode
+  - [F10] Toggle bot
+
 ### Videos
 
   - [Normal 4-key](https://www.youtube.com/watch?v=BzrZuJprFVY)
