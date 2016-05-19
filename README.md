@@ -11,7 +11,7 @@ If you have issues running after compiling, see [this link](http://stackoverflow
   - [F7] Toggle overlay
   - [F8] Toggle auto-ready (Presses F5 to ready after ~40s of no keys being detected)
   - [F9] Toggle 8-key or 4-key mode
-  - [F10] Toggle bot
+  - [F10] Toggle bot (on or off)
 
 ### Videos
 
