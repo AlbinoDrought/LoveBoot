@@ -85,7 +85,43 @@ namespace LoveBoot
 
         public Overlay GameOverlay { get; private set; }
 
+        public BotLogic(string[] processNames)
+        {
+            Initialize();
+
+            string foundProcess = "";
+
+            foreach(string processName in processNames)
+            {
+                if (windowFinder.SetProcess(processName)) foundProcess = processName;
+            }
+
+            if(foundProcess.Length > 0)
+            {
+                GameOverlay = new Overlay(this, keyCropSettings.X, keyCropSettings.Y, foundProcess);
+            }
+            else if (MessageBox.Show("No process found, is LoveBeat running?", Application.ProductName, MessageBoxButtons.YesNoCancel) == DialogResult.Yes)
+            {
+                using (ProcessPicker p = new ProcessPicker())
+                {
+                    DialogResult dr = p.ShowDialog();
+                    if (dr != DialogResult.OK) return;
+
+                    string processName = p.PickedProcessName;
+                    windowFinder.SetProcess(processName);
+                    GameOverlay = new Overlay(this, keyCropSettings.X, keyCropSettings.Y, processName);
+                }
+            }
+        }
+
         public BotLogic(string processName)
+        {
+            Initialize();
+            windowFinder.SetProcess(processName);
+            GameOverlay = new Overlay(this, keyCropSettings.X, keyCropSettings.Y, processName);
+        }
+
+        private void Initialize()
         {
             const string KEY_CROP_FILENAME = "key.lvb";
             const int KEY_CROP_X = 250, KEY_CROP_Y = 473, KEY_CROP_WIDTH = 524, KEY_CROP_HEIGHT = 58;
@@ -96,13 +132,11 @@ namespace LoveBoot
             imageFinder = new ImageFinder(0.9);
 
             // load all images based on Signal types. throws error if any of these are not found
-            foreach (Signal s in Enum.GetValues(typeof (Signal)))
+            foreach (Signal s in Enum.GetValues(typeof(Signal)))
             {
                 string subImagePath = String.Format("{0}{1}{2}", IMAGE_PATH, s.ToString(), IMAGE_EXT);
                 imageFinder.SubImages.Add(s, new Image<Bgr, byte>(subImagePath));
             }
-
-            windowFinder.SetProcess(processName);
 
             // init gamestate
             for (int i = 0; i < gameState.Length; i++)
@@ -115,8 +149,6 @@ namespace LoveBoot
 
             barCropSettings = CropSettings.Load(BAR_CROP_FILENAME, BAR_CROP_X, BAR_CROP_Y, BAR_CROP_WIDTH, BAR_CROP_HEIGHT);
             barCropSettings.SaveIfNotExist(BAR_CROP_FILENAME);
-
-            GameOverlay = new Overlay(this, keyCropSettings.X, keyCropSettings.Y, processName);
         }
 
         private bool _Enabled = false;

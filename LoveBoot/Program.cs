@@ -8,7 +8,7 @@ namespace LoveBoot
 {
     static class Program
     {
-        private const string PROCESS_NAME = "LoveBeat";
+        private static readonly string[] PROCESS_NAMES = { "LoveBeat", "LoveRitmo" };
 
         /// <summary>
         /// The main entry point for the application.
@@ -18,11 +18,10 @@ namespace LoveBoot
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form1());
 
-            BotLogic botLogic = new BotLogic(PROCESS_NAME);
+            BotLogic botLogic = new BotLogic(PROCESS_NAMES);
 
-            Application.Run(botLogic.GameOverlay);
+            if(botLogic.GameOverlay != null) Application.Run(botLogic.GameOverlay);
         }
     }
 }
