@@ -20,6 +20,7 @@ If you have issues running after compiling, see [this link](http://stackoverflow
   - [Normal 4-key](https://www.youtube.com/watch?v=BzrZuJprFVY)
   - [Normal 8-key](https://www.youtube.com/watch?v=F7P7MitfqPE)
   - [Random 8-key](https://www.youtube.com/watch?v=jQutaLH6nrc)
+  - [LoveRitmo 330BPM 4-key](https://www.youtube.com/watch?v=g7YFK9YhmCs)
 
 ### References
 Relies on:
