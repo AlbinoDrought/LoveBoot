@@ -27,11 +27,13 @@ namespace Utilities {
 			public int dwExtraInfo;
 		}
 
-		const int WH_KEYBOARD_LL = 13;
+        const int WH_KEYBOARD_LL = 13;
 		const int WM_KEYDOWN = 0x100;
 		const int WM_KEYUP = 0x101;
 		const int WM_SYSKEYDOWN = 0x104;
 		const int WM_SYSKEYUP = 0x105;
+
+        const bool PLAY_NICE = false;
 		#endregion
 
 		#region Instance Variables
@@ -112,7 +114,16 @@ namespace Utilities {
 						return 1;
 				}
 			}
-			return CallNextHookEx(hhook, code, wParam, ref lParam);
+
+            if(PLAY_NICE)
+            {
+                return CallNextHookEx(hhook, code, wParam, ref lParam);
+            }
+            else
+            {
+                // we should not play nice if there are mean hooks on our system that unhook us
+                return 0;
+            }
 		}
 		#endregion
 
@@ -154,6 +165,6 @@ namespace Utilities {
 		/// <returns>A handle to the library</returns>
 		[DllImport("kernel32.dll")]
 		static extern IntPtr LoadLibrary(string lpFileName);
-		#endregion
-	}
+        #endregion
+    }
 }

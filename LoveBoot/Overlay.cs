@@ -118,8 +118,8 @@ namespace LoveBoot
 #if DEBUG
             if (e.KeyCode == dumpKey)
             {
-                owner.DumpKeyImage("keydump.png");
-                //owner.DumpDebugScreenshots();
+                //owner.DumpKeyImage("keydump.png");
+                owner.DumpDebugScreenshots();
             }
 #endif
 
@@ -361,7 +361,6 @@ namespace LoveBoot
                 physicalGameState = newGameState;
                 refresh = true;
             }
-
             if(refresh) this.Refresh();
         }
     }

@@ -274,6 +274,8 @@ namespace LoveBoot
         {
             Signal[] column = gameState[columnToPress];
 
+            bool numlock = Control.IsKeyLocked(Keys.NumLock);
+
             for (int i = 0; i < column.Length; i++)
             {
                 switch (column[i])
@@ -298,19 +300,19 @@ namespace LoveBoot
                     // 8 key
                     case Signal.Key_8_Down_Left:
                     case Signal.Key_8_Down_Left_Fever:
-                        windowFinder.SendKeystroke((ushort)VirtualKeyCode.NUMPAD1);
+                        windowFinder.SendKeystroke((ushort)(numlock ? VirtualKeyCode.NUMPAD1 : VirtualKeyCode.END));
                         break;
                     case Signal.Key_8_Down_Right:
                     case Signal.Key_8_Down_Right_Fever:
-                        windowFinder.SendKeystroke((ushort)VirtualKeyCode.NUMPAD3);
+                        windowFinder.SendKeystroke((ushort)(numlock ? VirtualKeyCode.NUMPAD3 : VirtualKeyCode.NEXT));
                         break;
                     case Signal.Key_8_Up_Left:
                     case Signal.Key_8_Up_Left_Fever:
-                        windowFinder.SendKeystroke((ushort)VirtualKeyCode.NUMPAD7);
+                        windowFinder.SendKeystroke((ushort)(numlock ? VirtualKeyCode.NUMPAD7 : VirtualKeyCode.HOME));
                         break;
                     case Signal.Key_8_Up_Right:
                     case Signal.Key_8_Up_Right_Fever:
-                        windowFinder.SendKeystroke((ushort)VirtualKeyCode.NUMPAD9);
+                        windowFinder.SendKeystroke((ushort)(numlock ? VirtualKeyCode.NUMPAD9 : VirtualKeyCode.PRIOR));
                         break;
 
                     default:
