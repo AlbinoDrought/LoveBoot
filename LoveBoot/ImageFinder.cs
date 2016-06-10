@@ -10,6 +10,8 @@ using System.Runtime.InteropServices;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace LoveBoot
 {
@@ -29,6 +31,7 @@ namespace LoveBoot
     {
         private List<Rectangle> rectangles;
         private Stopwatch stopwatch;
+        private Bgr fillColor;
 
         public double Threshold { get; set; }
 
@@ -44,6 +47,7 @@ namespace LoveBoot
             rectangles = new List<Rectangle>();
             stopwatch = new Stopwatch();
             Threshold = threshold;
+            fillColor = new Bgr(Color.Magenta);
         }
 
         public ImageFinder()
@@ -51,6 +55,7 @@ namespace LoveBoot
             rectangles = new List<Rectangle>();
             stopwatch = new Stopwatch();
             Threshold = 0.85;
+            fillColor = new Bgr(Color.Magenta);
         }
 
         /// <summary>
@@ -67,9 +72,9 @@ namespace LoveBoot
             }
         }*/
 
-        public Dictionary<object, Rectangle[]> FindAllMatches(Image<Bgr, Byte> source, string match = "", bool copy = true, string ignore = "") // todo: proper order
+        public IDictionary<object, Rectangle[]> FindAllMatches(Image<Bgr, Byte> source, string match = "", bool copy = true, string ignore = "") // todo: proper order
         {
-            Dictionary <object, Rectangle[]> matches = new Dictionary<object, Rectangle[]>();
+            var matches = new ConcurrentDictionary<object, Rectangle[]>();
 
             Image<Bgr, Byte> sourceImage = copy ? source.Copy() : source;
 
@@ -79,21 +84,35 @@ namespace LoveBoot
                 if (ignore.Length > 0 && subImageKeyValuePair.Key.ToString().Contains(ignore)) continue;
 
                 Rectangle[] subImageMatches = FindMatches(sourceImage, subImageKeyValuePair.Value, copy);
-                matches.Add(subImageKeyValuePair.Key, subImageMatches);
+                matches[subImageKeyValuePair.Key] = subImageMatches;
             }
+
+            /*Parallel.ForEach(SubImages, (subImageKeyValuePair) =>
+            {
+                if (match.Length > 0 && !subImageKeyValuePair.Key.ToString().Contains(match)) return;
+                if (ignore.Length > 0 && subImageKeyValuePair.Key.ToString().Contains(ignore)) return;
+
+                Rectangle[] subImageMatches = FindMatches(sourceImage, subImageKeyValuePair.Value, copy);
+                matches[subImageKeyValuePair.Key] = subImageMatches;
+                //matches.Add(subImageKeyValuePair.Key, subImageMatches);
+            });*/
 
             return matches;
         } 
 
         public Rectangle[] FindMatches(Image<Bgr, Byte> source, Image<Bgr, Byte> target, bool copy = true)
         {
-            rectangles = new List<Rectangle>();
+            //rectangles = new List<Rectangle>();
+            rectangles.Clear();
             //stopwatch = new Stopwatch();
             //stopwatch.Start();
 
             Image<Bgr, Byte> imgSrc = copy ? source.Copy() : source;
 
             // FindImage all occurences of imgFind
+            
+            double[] minValues, maxValues;
+            Point[] minLocations, maxLocations;
 
             while (true)
             {
@@ -101,17 +120,15 @@ namespace LoveBoot
                     Image<Gray, float> result = imgSrc.MatchTemplate(target,
                         Emgu.CV.CvEnum.TemplateMatchingType.CcoeffNormed))
                 {
-                    double[] minValues, maxValues;
-                    Point[] minLocations, maxLocations;
                     result.MinMax(out minValues, out maxValues, out minLocations, out maxLocations);
-
+                   
                     // You can try different values of the threshold. I guess somewhere between 0.75 and 0.95 would be good.
                     if (maxValues[0] < Threshold || minValues[0] == maxValues[0]) break;
                     // This is a match. Do something with it, for example draw a rectangle around it.
                     Rectangle match = new Rectangle(maxLocations[0], target.Size);
 
                     // Fill the drawing with red in order to ellimate this as a source.
-                    imgSrc.Draw(match, new Bgr(Color.Magenta), -1);
+                    imgSrc.Draw(match, fillColor, -1);
 
                     // Add the found rectangle to the results.
                     rectangles.Add(match);

@@ -448,7 +448,7 @@ namespace LoveBoot
                 {
                     if (bar_image_source == null) continue;
 
-                    Dictionary<object, Rectangle[]> matches = barImageFinder.FindAllMatches(bar_image_source, "", false);
+                    IDictionary<object, Rectangle[]> matches = barImageFinder.FindAllMatches(bar_image_source, "", false);
 
                     foreach (KeyValuePair<object, Rectangle[]> pairs in matches)
                     {
@@ -518,7 +518,7 @@ namespace LoveBoot
                 {
                     if (key_image_source == null) continue;
 
-                    Dictionary<object, Rectangle[]> matches = stateImageFinder.FindAllMatches(key_image_source, "", false, EightKeyMode ? "" : "Key_8_"); // ignore key_8 if eight key mode is not enabled
+                    IDictionary<object, Rectangle[]> matches = stateImageFinder.FindAllMatches(key_image_source, "", false, EightKeyMode ? "" : "Key_8_"); // ignore key_8 if eight key mode is not enabled
 
                     bool addedAtLeastOne = false;
 
@@ -545,14 +545,17 @@ namespace LoveBoot
                         }
                     }
 
-                    if (addedAtLeastOne)
+                    if (AutoReady)
                     {
-                        stopwatch.Restart();
-                    }
-                    else if(AutoReady && stopwatch.ElapsedMilliseconds > TIME_BEFORE_AUTO_READY_MS)
-                    {
-                        windowFinder.SendKeystroke((ushort)VirtualKeyCode.F5);
-                        stopwatch.Reset(); // reset ensures bot does not auto ready more than once (un-readying). can be bad if it misses ready moment, if cooldown is too short
+                        if (addedAtLeastOne)
+                        {
+                            stopwatch.Restart();
+                        }
+                        else if (stopwatch.ElapsedMilliseconds > TIME_BEFORE_AUTO_READY_MS)
+                        {
+                            windowFinder.SendKeystroke((ushort)VirtualKeyCode.F5);
+                            stopwatch.Reset(); // reset ensures bot does not auto ready more than once (un-readying). can be bad if it misses ready moment, if cooldown is too short
+                        }
                     }
                 }
 
@@ -561,7 +564,7 @@ namespace LoveBoot
 
                 for (int i = 0; i < newGameState.Length; i++)
                 {
-                    if (newGameState[i].Count > 0 && oldPhysicalGameState[i].Count > 1 && oldPhysicalGameState[i].Count > newGameState[i].Count)
+                    if (oldPhysicalGameState != null && newGameState[i].Count > 0 && oldPhysicalGameState[i].Count > 1 && oldPhysicalGameState[i].Count > newGameState[i].Count)
                     {
                         // TEST: replaces gamestates per column if old game state had >=2 keys and this state has less, but not 0 (attempt to "fix" keys occasionally not being recognized in high bpm songs due to particles)
                         // similar to caching
@@ -574,7 +577,7 @@ namespace LoveBoot
                     Array.Sort(physicalSignalArray);
 
                     rawGameState[i] = new Signal[KEY_COLUMNS_MAX];
-                    for (int i2 = 0; i2 < physicalSignalArray.Length; i2++)
+                    for (int i2 = 0; i2 < physicalSignalArray.Length && i2 < KEY_COLUMNS_MAX; i2++)
                     {
                         rawGameState[i][i2] = physicalSignalArray[i2].Type;
                     }

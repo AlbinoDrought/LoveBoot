@@ -334,15 +334,23 @@ namespace LoveBoot
             }
 
             WindowFinder.Rect windowRect = windowFinder.GetWindowLocation();
-            this.Size = new Size(windowRect.Right - windowRect.Left, windowRect.Bottom - windowRect.Top);
-            this.Location = new Point(windowRect.Left, windowRect.Top);
+            if (this.Location.X != windowRect.Left || this.Location.Y != windowRect.Top)
+            {
+                this.Size = new Size(windowRect.Right - windowRect.Left, windowRect.Bottom - windowRect.Top);
+                this.Location = new Point(windowRect.Left, windowRect.Top);
+            }
         }
 
+        private int tmrOverlayTicks = 0;
         private void tmrOverlay_Tick(object sender, EventArgs e)
         {
             if (!windowFinder.ProcessFound) this.Close(); // attempts to close when the process isn't found, does not really work
 
-            fixPosition();
+            if (tmrOverlayTicks % 5 == 0)
+            {
+                fixPosition();
+                tmrOverlayTicks = 0;
+            }
 
             bool refresh = false;
 
@@ -362,6 +370,8 @@ namespace LoveBoot
                 refresh = true;
             }
             if(refresh) this.Refresh();
+
+            tmrOverlayTicks++;
         }
     }
 }
