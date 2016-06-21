@@ -93,7 +93,10 @@ namespace LoveBoot
 
             foreach(string processName in processNames)
             {
-                if (windowFinder.SetProcess(processName)) foundProcess = processName;
+                if (!windowFinder.SetProcess(processName)) continue;
+                
+                foundProcess = processName;
+                break;
             }
 
             if(foundProcess.Length > 0)
@@ -274,7 +277,7 @@ namespace LoveBoot
         {
             Signal[] column = gameState[columnToPress];
 
-            bool numlock = Control.IsKeyLocked(Keys.NumLock);
+            bool numlock = EightKeyMode && Control.IsKeyLocked(Keys.NumLock);
 
             for (int i = 0; i < column.Length; i++)
             {
@@ -282,19 +285,19 @@ namespace LoveBoot
                 {
                     case Signal.Key_Down:
                     case Signal.Key_Down_Fever:
-                        windowFinder.SendKeystroke((ushort)VirtualKeyCode.DOWN);
+                        windowFinder.SendKeystroke((ushort)(numlock ? VirtualKeyCode.NUMPAD2 : VirtualKeyCode.DOWN));
                         break;
                     case Signal.Key_Left:
                     case Signal.Key_Left_Fever:
-                        windowFinder.SendKeystroke((ushort)VirtualKeyCode.LEFT);
+                        windowFinder.SendKeystroke((ushort)(numlock ? VirtualKeyCode.NUMPAD4 : VirtualKeyCode.LEFT));
                         break;
                     case Signal.Key_Right:
                     case Signal.Key_Right_Fever:
-                        windowFinder.SendKeystroke((ushort)VirtualKeyCode.RIGHT);
+                        windowFinder.SendKeystroke((ushort)(numlock ? VirtualKeyCode.NUMPAD6 : VirtualKeyCode.RIGHT));
                         break;
                     case Signal.Key_Up:
                     case Signal.Key_Up_Fever:
-                        windowFinder.SendKeystroke((ushort)VirtualKeyCode.UP);
+                        windowFinder.SendKeystroke((ushort)(numlock ? VirtualKeyCode.NUMPAD8 : VirtualKeyCode.UP));
                         break;
 
                     // 8 key
