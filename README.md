@@ -4,7 +4,7 @@ LoveBoot is an automatic [LoveBeat](http://store.steampowered.com/app/354290/) p
 
 Uses Emgu/OpenCV image recognition to recognize the gamestate (keys), and when to fulfill the gamestate (bars).
 
-LoveBoot does not access or alter the game's memory in any way - it is not a hack. Despite this, you may still get banned.
+LoveBoot does not access or alter the game's memory in any way - it is not a hack. Despite this, you may still get banned. LoveBoot does not employ any form of anti-cheat bypass. 
 
 If you have issues running after compiling, see [this link](http://stackoverflow.com/questions/503427/the-type-initializer-for-emgu-cv-cvinvoke-threw-an-exception) (copy emgu dlls to folder)
 
